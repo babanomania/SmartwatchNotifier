@@ -81,29 +81,24 @@ public class TaskerNotificationRegistrationInformation extends RegistrationInfor
 
     @Override
     public ContentValues getExtensionRegistrationConfiguration() {
-        String extensionIcon = ExtensionUtils.getUriString(mContext,
-                R.drawable.icon_extension);
-        String iconHostapp = ExtensionUtils.getUriString(mContext,
-                R.drawable.icon);
-        String extensionIcon48 = ExtensionUtils.getUriString(mContext,
-                R.drawable.icon_extension_48);
+    	
+        String extensionIcon = ExtensionUtils.getUriString(mContext,R.drawable.icon_extension);
+        String iconHostapp = ExtensionUtils.getUriString(mContext,R.drawable.icon);
+        String extensionIcon48 = ExtensionUtils.getUriString(mContext,R.drawable.icon_extension_48);
 
         String configurationText = mContext.getString(R.string.configuration_text);
         String extensionName = mContext.getString(R.string.extension_name);
 
         ContentValues values = new ContentValues();
-        values.put(Registration.ExtensionColumns.CONFIGURATION_ACTIVITY,
-                TaskerNotificationPreferenceActivity.class.getName());
+        values.put(Registration.ExtensionColumns.CONFIGURATION_ACTIVITY, TaskerNotificationPreferenceActivity.class.getName());
         values.put(Registration.ExtensionColumns.CONFIGURATION_TEXT, configurationText);
         values.put(Registration.ExtensionColumns.EXTENSION_ICON_URI, extensionIcon);
         values.put(Registration.ExtensionColumns.EXTENSION_48PX_ICON_URI, extensionIcon48);
 
-        values.put(Registration.ExtensionColumns.EXTENSION_KEY,
-                TaskerNotificationExtensionService.EXTENSION_KEY);
+        values.put(Registration.ExtensionColumns.EXTENSION_KEY, TaskerNotificationExtensionService.EXTENSION_KEY);
         values.put(Registration.ExtensionColumns.HOST_APP_ICON_URI, iconHostapp);
         values.put(Registration.ExtensionColumns.NAME, extensionName);
-        values.put(Registration.ExtensionColumns.NOTIFICATION_API_VERSION,
-                getRequiredNotificationApiVersion());
+        values.put(Registration.ExtensionColumns.NOTIFICATION_API_VERSION,getRequiredNotificationApiVersion());
         values.put(Registration.ExtensionColumns.PACKAGE_NAME, mContext.getPackageName());
 
         return values;
@@ -112,8 +107,7 @@ public class TaskerNotificationRegistrationInformation extends RegistrationInfor
     @Override
     public ContentValues[] getSourceRegistrationConfigurations() {
         List<ContentValues> bulkValues = new ArrayList<ContentValues>();
-        bulkValues
-                .add(getSourceRegistrationConfiguration(TaskerNotificationExtensionService.EXTENSION_SPECIFIC_ID));
+        bulkValues.add(getSourceRegistrationConfiguration(TaskerNotificationExtensionService.EXTENSION_SPECIFIC_ID));
         return bulkValues.toArray(new ContentValues[bulkValues.size()]);
     }
 
@@ -126,13 +120,11 @@ public class TaskerNotificationRegistrationInformation extends RegistrationInfor
     public ContentValues getSourceRegistrationConfiguration(String extensionSpecificId) {
         ContentValues sourceValues = null;
 
-        String iconSource1 = ExtensionUtils.getUriString(mContext,
-                R.drawable.icn_30x30_message_notification);
-        String iconSource2 = ExtensionUtils.getUriString(mContext,
-                R.drawable.icn_18x18_message_notification);
-        String iconBw = ExtensionUtils.getUriString(mContext,
-                R.drawable.icn_18x18_black_white_message_notification);
+        String iconSource1 = ExtensionUtils.getUriString(mContext,R.drawable.icn_30x30_message_notification);
+        String iconSource2 = ExtensionUtils.getUriString(mContext,R.drawable.icn_18x18_message_notification);
+        String iconBw = ExtensionUtils.getUriString(mContext,R.drawable.icn_18x18_black_white_message_notification);
         String textToSpeech = mContext.getString(R.string.text_to_speech);
+        
         sourceValues = new ContentValues();
         sourceValues.put(Notification.SourceColumns.ENABLED, true);
         sourceValues.put(Notification.SourceColumns.ICON_URI_1, iconSource1);
@@ -143,18 +135,13 @@ public class TaskerNotificationRegistrationInformation extends RegistrationInfor
         sourceValues.put(Notification.SourceColumns.EXTENSION_SPECIFIC_ID, extensionSpecificId);
         sourceValues.put(Notification.SourceColumns.PACKAGE_NAME, mContext.getPackageName());
         sourceValues.put(Notification.SourceColumns.TEXT_TO_SPEECH, textToSpeech);
-        sourceValues.put(Notification.SourceColumns.ACTION_1,
-                mContext.getString(R.string.action_event_1));
-        sourceValues.put(Notification.SourceColumns.ACTION_2,
-                mContext.getString(R.string.action_event_2));
-        sourceValues.put(Notification.SourceColumns.ACTION_3,
-                mContext.getString(R.string.action_event_3));
-        sourceValues.put(Notification.SourceColumns.ACTION_ICON_1,
-                ExtensionUtils.getUriString(mContext, R.drawable.actions_1));
-        sourceValues.put(Notification.SourceColumns.ACTION_ICON_2,
-                ExtensionUtils.getUriString(mContext, R.drawable.actions_2));
-        sourceValues.put(Notification.SourceColumns.ACTION_ICON_3,
-                ExtensionUtils.getUriString(mContext, R.drawable.actions_3));
+        
+        sourceValues.put(Notification.SourceColumns.ACTION_1,mContext.getString(R.string.action_event_1));
+        sourceValues.put(Notification.SourceColumns.ACTION_2,mContext.getString(R.string.action_event_2));
+        sourceValues.put(Notification.SourceColumns.ACTION_3,mContext.getString(R.string.action_event_3));
+        sourceValues.put(Notification.SourceColumns.ACTION_ICON_1,ExtensionUtils.getUriString(mContext, R.drawable.actions_1));
+        sourceValues.put(Notification.SourceColumns.ACTION_ICON_2,ExtensionUtils.getUriString(mContext, R.drawable.actions_2));
+        sourceValues.put(Notification.SourceColumns.ACTION_ICON_3,ExtensionUtils.getUriString(mContext, R.drawable.actions_3));
         return sourceValues;
     }
 

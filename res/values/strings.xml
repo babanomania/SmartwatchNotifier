@@ -2,22 +2,23 @@
 <!-- No translation of sample extensions -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     
-    <string name="app_name">Tasker Notification Extension</string>
+    <string name="app_name">Tasker Smartwatch Notifications</string>
     <!-- Title of preference activity -->
-    <string name="preference_activity_title">tasker notification Settings</string>
+    <string name="preference_activity_title">Tasker Smartwatch Notifications</string>
     <!-- Configuration text shown in preferences -->
-    <string name="configuration_text">tasker notification settings</string>
+    <string name="configuration_text">Tasker Smartwatch Notifications</string>
     <!-- Extension name, shown in preferences -->
-    <string name="extension_name">tasker notification</string>
+    <string name="extension_name">Tasker Smartwatch Notifications</string>
     <!-- Name of source, shown in preferences -->
-    <string name="source_name">tasker notification source</string>
+    <string name="source_name">Tasker Smartwatch Notification Source</string>
+    
     <!-- Action Toasts, shown on accessory -->
     <string name="action_event_1">Action Toast 1</string>
     <string name="action_event_2">Action Toast 2</string>
     <string name="action_event_3">Action Toast 3</string>
 
     
-     <string name="setting_name">Smartwatch2 Notifications</string>
+     <string name="setting_name">Tasker Smartwatch Notifications</string>
     
     <!-- Text that is read before the display name on accessories that supports text to speech -->
     <string name="text_to_speech">New sample notification event from</string>
@@ -33,10 +34,14 @@
     <string name="clear_success">All events have been deleted</string>
     <string name="clear_failure">Failed to delete events</string>
     
+   <string name="preference_key_project">preference_key_project</string>
+    <string name="preference_summary_projects">select the tasker project to use</string>
+    <string name="preference_title_projects">Select Project</string>
+    
     <!-- A format string for breadcrumbs in the titlebar.  For left to right languages, such as English, the format will look something like "Main Activity > Sub Activity > Sub Activity 2".  Item #1 is the previous path, item #2 is the separator, and item #3 is the current item.  For most left to right languages, this shouldn't need to be changed. -->
     <string name="twofortyfouram_locale_breadcrumb_format" tools:ignore="UnusedResources">%1$s%2$s%3$s</string>
 
     <!-- The separator character for breadcrumbs.  For most left to right languages, this shouldn't need to be changed. -->
     <string name="twofortyfouram_locale_breadcrumb_separator" tools:ignore="UnusedResources">\u0020&gt;\u0020</string>
-
+    
 </resources>

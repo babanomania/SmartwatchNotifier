@@ -54,11 +54,17 @@ import com.sonyericsson.extras.liveware.extension.util.registration.Registration
  */
 public class TaskerNotificationExtensionService extends ExtensionService {
 
+	public static final String ACTION1 = "ACTION1";
+	public static final String ACTION2 = "ACTION2";
+	public static final String ACTION3 = "ACTION3";
+	
 	public static final String CONTENT = "Content";
 
 	public static final String TITLE = "Title";
 
 	public static final String LOG_TAG = "TaskerNotifierService";  
+	
+	public static final String ALL = "ALL";
 	
     /**
      * Extensions specific id for the source
@@ -165,6 +171,7 @@ public class TaskerNotificationExtensionService extends ExtensionService {
 
         try {
             getContentResolver().insert(Notification.Event.URI, eventValues);
+            
         } catch (IllegalArgumentException e) {
             Log.e(LOG_TAG, "Failed to insert event", e);
         } catch (SecurityException e) {
@@ -176,15 +183,15 @@ public class TaskerNotificationExtensionService extends ExtensionService {
 
     @Override
     protected void onViewEvent(Intent intent) {
+    	
         String action = intent.getStringExtra(Notification.Intents.EXTRA_ACTION);
-        String hostAppPackageName = intent
-                .getStringExtra(Registration.Intents.EXTRA_AHA_PACKAGE_NAME);
-        boolean advancedFeaturesSupported = DeviceInfoHelper.isSmartWatch2ApiAndScreenDetected(
-                this, hostAppPackageName);
+        String hostAppPackageName = intent.getStringExtra(Registration.Intents.EXTRA_AHA_PACKAGE_NAME);
+        boolean advancedFeaturesSupported = DeviceInfoHelper.isSmartWatch2ApiAndScreenDetected(this, hostAppPackageName);
 
         int eventId = intent.getIntExtra(Notification.Intents.EXTRA_EVENT_ID, -1);
         if (Notification.SourceColumns.ACTION_1.equals(action)) {
             doAction1(eventId);
+            
         } else if (Notification.SourceColumns.ACTION_2.equals(action)) {
             // Here we can take different actions depending on the device.
             if (advancedFeaturesSupported) {
@@ -192,6 +199,7 @@ public class TaskerNotificationExtensionService extends ExtensionService {
             } else {
                 Toast.makeText(this, "Action 2", Toast.LENGTH_LONG).show();
             }
+            
         } else if (Notification.SourceColumns.ACTION_3.equals(action)) {
             Toast.makeText(this, "Action 3", Toast.LENGTH_LONG).show();
         }
