@@ -130,7 +130,7 @@ public class TaskerNotificationRegistrationInformation extends RegistrationInfor
         sourceValues.put(Notification.SourceColumns.ICON_URI_1, iconSource1);
         sourceValues.put(Notification.SourceColumns.ICON_URI_2, iconSource2);
         sourceValues.put(Notification.SourceColumns.ICON_URI_BLACK_WHITE, iconBw);
-        sourceValues.put(Notification.SourceColumns.COLOR, android.graphics.Color.MAGENTA);
+        sourceValues.put(Notification.SourceColumns.COLOR, android.graphics.Color.rgb(80, 159, 176) );
         
         sourceValues.put(Notification.SourceColumns.UPDATE_TIME, System.currentTimeMillis());
         sourceValues.put(Notification.SourceColumns.NAME, mContext.getString(R.string.source_name));
