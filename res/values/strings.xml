@@ -25,7 +25,7 @@
 
     <string name="preference_option_read_me">READ ME</string>
     <string name="preference_key_read_me">preference_key_read_me</string>
-    <string name="preference_option_read_me_txt">1. Check menu option Active to generate events based on a static timer.\n\n2. Uncheck menu option Active to cancel the event generator.\n\n3. Tap Clear All Events to remove all events.</string>
+    <string name="preference_option_read_me_txt">1. Make sure you enable external access in tasker.\n\n2. In order to send notifications from Tasker app, find this under plugin category.\n\n3. Tap Clear All Events to remove all events.</string>
     <string name="preference_option_is_active">Active</string>
     <string name="preference_key_is_active">preference_key_is_active</string>
     <string name="preference_option_clear">Clear All Events</string>

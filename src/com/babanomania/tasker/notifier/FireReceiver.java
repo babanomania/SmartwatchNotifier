@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.babanomania.tasker.notifier.bundle.BundleScrubber;
+import com.sonyericsson.extras.liveware.aef.notification.Notification;
 
 public class FireReceiver extends BroadcastReceiver {
 
@@ -35,6 +36,9 @@ public class FireReceiver extends BroadcastReceiver {
             
             localeSettings.putString( TaskerNotificationExtensionService.CONTENT, content );
             
+            String actionString = getActionsString(action1Str, action2Str, action3Str);
+            localeSettings.putString( TaskerNotificationExtensionService.ACTION_STRINGS, actionString );
+            
         	Log.d( "FireReceiver" , localeSettings.toString() );
         	
         	Intent notificationRequest = new Intent(context, TaskerNotificationExtensionService.class);
@@ -47,6 +51,38 @@ public class FireReceiver extends BroadcastReceiver {
 			context.startService(notificationRequest);
 
         }
+        
+	}
+	
+	private String getActionsString( String action1, String action2, String action3 ){
+		
+		String sep = "^";
+		if( action1.contains(sep) || action2.contains(sep) || action3.contains(sep) )
+			sep = "#";
+		else if( action1.contains(sep) || action2.contains(sep) || action3.contains(sep) )
+			sep = "$";
+		else if( action1.contains(sep) || action2.contains(sep) || action3.contains(sep) )
+			sep = "%";
+		else if( action1.contains(sep) || action2.contains(sep) || action3.contains(sep) )
+			sep = "&";
+		else if( action1.contains(sep) || action2.contains(sep) || action3.contains(sep) )
+			sep = "*";
+		else if( action1.contains(sep) || action2.contains(sep) || action3.contains(sep) )
+			sep = "(";
+		else if( action1.contains(sep) || action2.contains(sep) || action3.contains(sep) )
+			sep = ")";
+		else if( action1.contains(sep) || action2.contains(sep) || action3.contains(sep) )
+			sep = "{";
+		else if( action1.contains(sep) || action2.contains(sep) || action3.contains(sep) )
+			sep = "}";
+		else if( action1.contains(sep) || action2.contains(sep) || action3.contains(sep) )
+			sep = "[";
+		else if( action1.contains(sep) || action2.contains(sep) || action3.contains(sep) )
+			sep = "]";
+		else 
+			sep = "~";
+		
+		return sep + action1 + sep + action2 + sep + action3;
 	}
 
 }

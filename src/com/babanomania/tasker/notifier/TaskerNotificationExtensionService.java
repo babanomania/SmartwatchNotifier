@@ -32,16 +32,16 @@ Copyright (c) 2011-2013, Sony Mobile Communications AB
 
 package com.babanomania.tasker.notifier;
 
+import net.dinglisch.android.tasker.TaskerUtil;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
+import com.sonyericsson.extras.liveware.aef.control.Control;
 import com.sonyericsson.extras.liveware.aef.notification.Notification;
-import com.sonyericsson.extras.liveware.aef.registration.Registration;
 import com.sonyericsson.extras.liveware.extension.util.ExtensionService;
 import com.sonyericsson.extras.liveware.extension.util.ExtensionUtils;
 import com.sonyericsson.extras.liveware.extension.util.notification.NotificationUtil;
@@ -59,9 +59,9 @@ public class TaskerNotificationExtensionService extends ExtensionService {
 	public static final String ACTION3 = "ACTION3";
 	
 	public static final String CONTENT = "Content";
-
 	public static final String TITLE = "Title";
-
+	public static final String ACTION_STRINGS = "ACTION_STRINGS";
+	
 	public static final String LOG_TAG = "TaskerNotifierService";  
 	
 	public static final String ALL = "ALL";
@@ -115,9 +115,16 @@ public class TaskerNotificationExtensionService extends ExtensionService {
                 
 	                if( extras.getString( TITLE ) != null && extras.getString( CONTENT ) != null ){
 	               
+	                	String hostAppPackageName = intent.getStringExtra(Control.Intents.EXTRA_AHA_PACKAGE_NAME);
+	                	boolean advancedFeaturesSupported = DeviceInfoHelper.isSmartWatch2ApiAndScreenDetected(this, hostAppPackageName);
+	                	
 	                	Log.d( "TaskerNotificationExtensionService" , extras.toString() );
-		                NotificationUtil.deleteAllEvents(this);
-		                addData( extras.getString( TITLE ), extras.getString( CONTENT ) );
+	                	
+	                	if( !advancedFeaturesSupported )
+	                		addData( extras.getString( TITLE ), extras.getString( CONTENT ), null );
+	                	else
+	                		addData( extras.getString( TITLE ), extras.getString( CONTENT ), extras.getString(ACTION_STRINGS) );
+	                	
 		                extras.clear();
 		                
 		                stopSelfCheck();
@@ -150,7 +157,7 @@ public class TaskerNotificationExtensionService extends ExtensionService {
     /**
      * Add some "random" data
      */
-    private void addData( String name, String message  ) {
+    private void addData( String name, String message, String actionString  ) {
 
     	long time = System.currentTimeMillis();
         long sourceId = NotificationUtil.getSourceId(this, EXTENSION_SPECIFIC_ID);
@@ -158,6 +165,7 @@ public class TaskerNotificationExtensionService extends ExtensionService {
             Log.e(LOG_TAG, "Failed to insert data");
             return;
         }
+        
         String profileImage = ExtensionUtils.getUriString(this,R.drawable.icon_dark);
 
         ContentValues eventValues = new ContentValues();
@@ -168,14 +176,19 @@ public class TaskerNotificationExtensionService extends ExtensionService {
         eventValues.put(Notification.EventColumns.PROFILE_IMAGE_URI, profileImage);
         eventValues.put(Notification.EventColumns.PUBLISHED_TIME, time);
         eventValues.put(Notification.EventColumns.SOURCE_ID, sourceId);
+        
+        if( actionString != null )
+        eventValues.put(Notification.EventColumns.FRIEND_KEY, actionString);
 
         try {
             getContentResolver().insert(Notification.Event.URI, eventValues);
             
         } catch (IllegalArgumentException e) {
             Log.e(LOG_TAG, "Failed to insert event", e);
+            
         } catch (SecurityException e) {
             Log.e(LOG_TAG, "Failed to insert event, is Live Ware Manager installed?", e);
+            
         } catch (SQLException e) {
             Log.e(LOG_TAG, "Failed to insert event", e);
         }
@@ -185,23 +198,16 @@ public class TaskerNotificationExtensionService extends ExtensionService {
     protected void onViewEvent(Intent intent) {
     	
         String action = intent.getStringExtra(Notification.Intents.EXTRA_ACTION);
-        String hostAppPackageName = intent.getStringExtra(Registration.Intents.EXTRA_AHA_PACKAGE_NAME);
-        boolean advancedFeaturesSupported = DeviceInfoHelper.isSmartWatch2ApiAndScreenDetected(this, hostAppPackageName);
-
         int eventId = intent.getIntExtra(Notification.Intents.EXTRA_EVENT_ID, -1);
+        
         if (Notification.SourceColumns.ACTION_1.equals(action)) {
-            doAction1(eventId);
+            doAction( ACTION1, eventId );
             
         } else if (Notification.SourceColumns.ACTION_2.equals(action)) {
-            // Here we can take different actions depending on the device.
-            if (advancedFeaturesSupported) {
-                Toast.makeText(this, "Action 2 API level 2", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(this, "Action 2", Toast.LENGTH_LONG).show();
-            }
+        	doAction( ACTION2, eventId );
             
         } else if (Notification.SourceColumns.ACTION_3.equals(action)) {
-            Toast.makeText(this, "Action 3", Toast.LENGTH_LONG).show();
+        	doAction( ACTION3, eventId );
         }
     }
 
@@ -216,24 +222,26 @@ public class TaskerNotificationExtensionService extends ExtensionService {
      *
      * @param eventId The event id
      */
-    public void doAction1(int eventId) {
+    public void doAction( String actionNo, int eventId) {
+    	
         Log.d(LOG_TAG, "doAction1 event id: " + eventId);
         Cursor cursor = null;
+        
         try {
-            String name = "";
-            String message = "";
-            cursor = getContentResolver().query(Notification.Event.URI, null,
-                    Notification.EventColumns._ID + " = " + eventId, null, null);
+            cursor = getContentResolver().query(Notification.Event.URI, null, Notification.EventColumns._ID + " = " + eventId, null, null);
+            
             if (cursor != null && cursor.moveToFirst()) {
-                int nameIndex = cursor.getColumnIndex(Notification.EventColumns.DISPLAY_NAME);
-                int messageIndex = cursor.getColumnIndex(Notification.EventColumns.MESSAGE);
-                name = cursor.getString(nameIndex);
-                message = cursor.getString(messageIndex);
+                int unparsedDataIndex = cursor.getColumnIndex(Notification.EventColumns.FRIEND_KEY);
+                
+                String unparsedData = cursor.getString(unparsedDataIndex);
+                String taskToRun = getTaskToRun( actionNo, unparsedData );
+                
+                if( taskToRun != null && !taskToRun.equals( EditActivity.SELECT_A_TASK )){
+                	Log.d(LOG_TAG, "detected task to run : '" + taskToRun + "' ");
+                	TaskerUtil.runTask( this, taskToRun );
+                }
             }
-
-            String toastMessage = getText(R.string.action_event_1) + ", Event: " + eventId
-                    + ", Name: " + name + ", Message: " + message;
-            Toast.makeText(this, toastMessage, Toast.LENGTH_LONG).show();
+            
         } catch (SQLException e) {
             Log.e(LOG_TAG, "Failed to query event", e);
         } catch (SecurityException e) {
@@ -260,5 +268,31 @@ public class TaskerNotificationExtensionService extends ExtensionService {
     @Override
     protected boolean keepRunningWhenConnected() {
         return false;
+    }
+    
+    private String getTaskToRun( String actionNo, String unparsedData ){
+    	
+    	if( unparsedData == null || unparsedData.length() < 7 )    	
+    		return null;
+    	
+    	String sep = unparsedData.substring(0, 1);
+    	String stringToParse = unparsedData.substring(1);
+    	if(! stringToParse.contains(sep) )
+    		return null;
+    	
+    	Log.d(LOG_TAG, "string to parse : " + unparsedData );
+    	String[] actionsArr = stringToParse.split(sep);
+    	
+    	if( actionNo == ACTION1 )
+    		return actionsArr[0];
+    	
+    	if( actionNo == ACTION2 )
+    		return actionsArr[1];
+    	
+    	if( actionNo == ACTION3 )
+    		return actionsArr[2];
+    	
+    	else
+    		return null;
     }
 }

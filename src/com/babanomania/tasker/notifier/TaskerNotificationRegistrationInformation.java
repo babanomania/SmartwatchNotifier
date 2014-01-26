@@ -82,9 +82,9 @@ public class TaskerNotificationRegistrationInformation extends RegistrationInfor
     @Override
     public ContentValues getExtensionRegistrationConfiguration() {
     	
-        String extensionIcon = ExtensionUtils.getUriString(mContext,R.drawable.icon_extension);
+        String extensionIcon = ExtensionUtils.getUriString(mContext,R.drawable.ic_launcher);
         String iconHostapp = ExtensionUtils.getUriString(mContext,R.drawable.icon);
-        String extensionIcon48 = ExtensionUtils.getUriString(mContext,R.drawable.icon_extension_48);
+        String extensionIcon48 = ExtensionUtils.getUriString(mContext,R.drawable.ic_launcher);
 
         String configurationText = mContext.getString(R.string.configuration_text);
         String extensionName = mContext.getString(R.string.extension_name);
@@ -130,6 +130,8 @@ public class TaskerNotificationRegistrationInformation extends RegistrationInfor
         sourceValues.put(Notification.SourceColumns.ICON_URI_1, iconSource1);
         sourceValues.put(Notification.SourceColumns.ICON_URI_2, iconSource2);
         sourceValues.put(Notification.SourceColumns.ICON_URI_BLACK_WHITE, iconBw);
+        sourceValues.put(Notification.SourceColumns.COLOR, android.graphics.Color.rgb(255, 165, 0) );
+        
         sourceValues.put(Notification.SourceColumns.UPDATE_TIME, System.currentTimeMillis());
         sourceValues.put(Notification.SourceColumns.NAME, mContext.getString(R.string.source_name));
         sourceValues.put(Notification.SourceColumns.EXTENSION_SPECIFIC_ID, extensionSpecificId);
@@ -139,6 +141,7 @@ public class TaskerNotificationRegistrationInformation extends RegistrationInfor
         sourceValues.put(Notification.SourceColumns.ACTION_1,mContext.getString(R.string.action_event_1));
         sourceValues.put(Notification.SourceColumns.ACTION_2,mContext.getString(R.string.action_event_2));
         sourceValues.put(Notification.SourceColumns.ACTION_3,mContext.getString(R.string.action_event_3));
+        
         sourceValues.put(Notification.SourceColumns.ACTION_ICON_1,ExtensionUtils.getUriString(mContext, R.drawable.actions_1));
         sourceValues.put(Notification.SourceColumns.ACTION_ICON_2,ExtensionUtils.getUriString(mContext, R.drawable.actions_2));
         sourceValues.put(Notification.SourceColumns.ACTION_ICON_3,ExtensionUtils.getUriString(mContext, R.drawable.actions_3));

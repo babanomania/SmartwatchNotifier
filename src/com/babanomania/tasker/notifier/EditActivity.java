@@ -47,10 +47,6 @@ public class EditActivity extends Activity {
         action2Spinner.setAdapter(dataAdapter);
         action3Spinner.setAdapter(dataAdapter);
         
-        action1Spinner.setSelection(0);
-        action2Spinner.setSelection(0);
-        action3Spinner.setSelection(0);
-        
         if (localeBundle != null && null == savedInstanceState)
         {
            // if (PluginBundleManager.isBundleValid(localeBundle))
@@ -76,6 +72,10 @@ public class EditActivity extends Activity {
                 
             }else{
             	Log.d( TaskerNotificationExtensionService.LOG_TAG, "localeBundle is not valid " + localeBundle );
+            	
+                action1Spinner.setSelection(0);
+                action2Spinner.setSelection(0);
+                action3Spinner.setSelection(0);
             	
             	for (String key: localeBundle.keySet())
             	{
@@ -125,7 +125,10 @@ public class EditActivity extends Activity {
 		resultIntent.putExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE, extra);
         resultIntent.putExtra(com.twofortyfouram.locale.Intent.EXTRA_STRING_BLURB, messageTitle.getText().toString() );
 		
-        List<String> listOfTasks = TaskerUtil.getTasks( this );
+        List<String> listOfTasks = new ArrayList<String>();
+        listOfTasks.add( SELECT_A_TASK );
+        listOfTasks.addAll( TaskerUtil.getTasks( this ) );
+        
         int action1Pos = action1Spinner.getSelectedItemPosition();
         int action2Pos = action2Spinner.getSelectedItemPosition();
         int action3Pos = action3Spinner.getSelectedItemPosition();
@@ -147,7 +150,7 @@ public class EditActivity extends Activity {
     	super.finish();
     }
     
-    public int getIndex( List arraylist, String itemName)
+    public int getIndex( List<String> arraylist, String itemName)
     {
         for (int i = 0; i < arraylist.size(); i++)
         {
