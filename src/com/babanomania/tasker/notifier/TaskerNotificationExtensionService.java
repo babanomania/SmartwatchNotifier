@@ -40,12 +40,10 @@ import android.database.SQLException;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.sonyericsson.extras.liveware.aef.control.Control;
 import com.sonyericsson.extras.liveware.aef.notification.Notification;
 import com.sonyericsson.extras.liveware.extension.util.ExtensionService;
 import com.sonyericsson.extras.liveware.extension.util.ExtensionUtils;
 import com.sonyericsson.extras.liveware.extension.util.notification.NotificationUtil;
-import com.sonyericsson.extras.liveware.extension.util.registration.DeviceInfoHelper;
 import com.sonyericsson.extras.liveware.extension.util.registration.RegistrationInformation;
 
 /**
@@ -115,18 +113,10 @@ public class TaskerNotificationExtensionService extends ExtensionService {
                 
 	                if( extras.getString( TITLE ) != null && extras.getString( CONTENT ) != null ){
 	               
-	                	String hostAppPackageName = intent.getStringExtra(Control.Intents.EXTRA_AHA_PACKAGE_NAME);
-	                	boolean advancedFeaturesSupported = DeviceInfoHelper.isSmartWatch2ApiAndScreenDetected(this, hostAppPackageName);
-	                	
 	                	Log.d( "TaskerNotificationExtensionService" , extras.toString() );
-	                	
-	                	if( !advancedFeaturesSupported )
-	                		addData( extras.getString( TITLE ), extras.getString( CONTENT ), null );
-	                	else
-	                		addData( extras.getString( TITLE ), extras.getString( CONTENT ), extras.getString(ACTION_STRINGS) );
+	                	addData( extras.getString( TITLE ), extras.getString( CONTENT ), extras.getString(ACTION_STRINGS) );
 	                	
 		                extras.clear();
-		                
 		                stopSelfCheck();
 		                
 	                }else{
@@ -177,8 +167,11 @@ public class TaskerNotificationExtensionService extends ExtensionService {
         eventValues.put(Notification.EventColumns.PUBLISHED_TIME, time);
         eventValues.put(Notification.EventColumns.SOURCE_ID, sourceId);
         
-        if( actionString != null )
-        eventValues.put(Notification.EventColumns.FRIEND_KEY, actionString);
+        if( actionString != null ){
+        	Log.d(LOG_TAG, "adding actionString : " + actionString );
+        	eventValues.put(Notification.EventColumns.FRIEND_KEY, actionString);
+        }else
+        	Log.d(LOG_TAG, "actionString is null, so skipping it" );
 
         try {
             getContentResolver().insert(Notification.Event.URI, eventValues);
@@ -224,7 +217,7 @@ public class TaskerNotificationExtensionService extends ExtensionService {
      */
     public void doAction( String actionNo, int eventId) {
     	
-        Log.d(LOG_TAG, "doAction1 event id: " + eventId);
+        Log.d(LOG_TAG, "doAction event id: " + eventId);
         Cursor cursor = null;
         
         try {
@@ -232,23 +225,33 @@ public class TaskerNotificationExtensionService extends ExtensionService {
             
             if (cursor != null && cursor.moveToFirst()) {
                 int unparsedDataIndex = cursor.getColumnIndex(Notification.EventColumns.FRIEND_KEY);
-                
                 String unparsedData = cursor.getString(unparsedDataIndex);
+                Log.d(LOG_TAG, "unparsedData for the task : '" + unparsedData + "' + actionNo : " + actionNo );
+                
                 String taskToRun = getTaskToRun( actionNo, unparsedData );
                 
                 if( taskToRun != null && !taskToRun.equals( EditActivity.SELECT_A_TASK )){
                 	Log.d(LOG_TAG, "detected task to run : '" + taskToRun + "' ");
                 	TaskerUtil.runTask( this, taskToRun );
+                }else{
+                	Log.d(LOG_TAG, "skiping task to run : '" + taskToRun + "' ");
                 }
+                
+            }else{
+            	Log.d(LOG_TAG, "doAction cursor : " + cursor + ", cursor.moveToFirst() : " + cursor.moveToFirst() );
             }
             
         } catch (SQLException e) {
             Log.e(LOG_TAG, "Failed to query event", e);
+            
         } catch (SecurityException e) {
             Log.e(LOG_TAG, "Failed to query event", e);
+            
         } catch (IllegalArgumentException e) {
             Log.e(LOG_TAG, "Failed to query event", e);
+            
         } finally {
+        	
             if (cursor != null) {
                 cursor.close();
             }

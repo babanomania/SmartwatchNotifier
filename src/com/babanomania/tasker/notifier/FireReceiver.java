@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.babanomania.tasker.notifier.bundle.BundleScrubber;
-import com.sonyericsson.extras.liveware.aef.notification.Notification;
 
 public class FireReceiver extends BroadcastReceiver {
 

@@ -132,8 +132,6 @@ public class TaskerUtil {
 	}
 	
 	public static String[] getProfiles( Context context ){
-		
 		return null;
-		
 	}
 }

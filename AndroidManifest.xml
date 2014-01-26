@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.babanomania.tasker.notifier"
-      android:versionName="1.0.2" android:versionCode="10002">
+      android:versionName="1.0.3" android:versionCode="10003">
       
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="18"/>
 
